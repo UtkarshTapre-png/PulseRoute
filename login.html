@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Citizen Access & Registration - PulseRoute SOS Portal</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <a href="admin-login.html" class="admin-top-btn" id="btn-admin-access">Admin Access</a>
+    <a href="index.html" class="backtopage-top-btn" id="btn-back-portal">&larr; Back to Portal</a>
+
+    <div class="container">
+        <h1 id="main-heading">Citizen Emergency SOS Portal</h1>
+
+        <div class="login-box">
+            <!-- Navigation Tabs for Registered vs Not Yet Registered / Login -->
+            <div class="tab-switcher" role="tablist" aria-label="Citizen Access Options">
+                <button 
+                    type="button" 
+                    id="tab-login" 
+                    class="tab-btn active" 
+                    role="tab" 
+                    aria-selected="true" 
+                    aria-controls="panel-login"
+                    onclick="switchTab('login')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                        <polyline points="10 17 15 12 10 7"></polyline>
+                        <line x1="15" y1="12" x2="3" y2="12"></line>
+                    </svg>
+                    <span id="tab-login-text">Already Registered</span>
+                </button>
+                <button 
+                    type="button" 
+                    id="tab-register" 
+                    class="tab-btn" 
+                    role="tab" 
+                    aria-selected="false" 
+                    aria-controls="panel-register"
+                    onclick="switchTab('register')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="8.5" cy="7" r="4"></circle>
+                        <line x1="20" y1="8" x2="20" y2="14"></line>
+                        <line x1="23" y1="11" x2="17" y2="11"></line>
+                    </svg>
+                    <span id="tab-register-text">Not Registered Yet</span>
+                </button>
+            </div>
+
+            <!-- TAB 1: For users who are ALREADY REGISTERED (Login / Authenticate) -->
+            <div id="panel-login" class="tab-panel active" role="tabpanel" aria-labelledby="tab-login">
+                <div class="wrapper">
+                    <h2 id="login-title">Secure Portal Access</h2>
+                    <h5 id="login-desc">Please authenticate to connect with rapid, real-time municipal emergency services. Your secure connection is critical for dispatch telemetry.</h5>
+                </div>
+
+                <div id="login-msg" class="form-msg"></div>
+
+                <form action="/login" method="POST" id="form-login">
+                    <div class="input-group">
+                        <label for="citizen-id" class="sr-only" id="label-citizen-id">Citizen ID or Email</label>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg> 
+                        <input type="text" id="citizen-id" name="citizen_id" placeholder="Citizen ID or Registered Email" required autocomplete="username">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="system-password" class="sr-only" id="label-system-password">System Password</label>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <input type="password" id="system-password" name="system_password" placeholder="System Password" required autocomplete="current-password">
+                        <button type="button" class="icon-toggle-pwd" id="btn-toggle-login-pwd" onclick="togglePassword('system-password', this)" aria-label="Toggle password visibility">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="connect">
+                        <button type="submit" id="btn-login-submit">Submit / Authenticate</button>
+                    </div>
+                </form>
+
+                <div class="login-links">
+                    <a href="javascript:void(0)" onclick="handleForgotPassword()" id="link-forgot-pwd">Forgot Password?</a>
+                    <div class="tab-switch-helper">
+                        <span id="helper-new-user">New or not registered yet?</span>
+                        <button type="button" class="text-link-btn" id="btn-go-register" onclick="switchTab('register')">Create an account &rarr;</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: For users who are NOT YET REGISTERED / NOT LOGGED IN -->
+            <div id="panel-register" class="tab-panel" role="tabpanel" aria-labelledby="tab-register">
+                <div class="wrapper">
+                    <h2 id="reg-title">Citizen Registration</h2>
+                    <h5 id="reg-desc">Register your verified profile with municipal services to enable priority dispatch, real-time medical profile sync, and live responder telemetry.</h5>
+                </div>
+
+                <!-- Immediate Help Notice for unregistered / unauthenticated users in distress -->
+                <div class="emergency-quick-banner">
+                    <div class="quick-banner-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                    <div class="quick-banner-text">
+                        <strong id="banner-emergency-title">Active Emergency Crisis?</strong>
+                        <span id="banner-emergency-desc">No account needed for critical dispatch.</span>
+                    </div>
+                    <a href="index.html" class="quick-sos-link" id="banner-emergency-link">Guest SOS &rarr;</a>
+                </div>
+
+                <div id="register-msg" class="form-msg"></div>
+
+                <form action="/register" method="POST" id="form-register" onsubmit="return handleRegister(event)">
+                    <div class="input-group">
+                        <label for="reg-name" class="sr-only" id="label-reg-name">Full Legal Name</label>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <input type="text" id="reg-name" name="full_name" placeholder="Full Legal Name" required autocomplete="name">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="reg-email" class="sr-only" id="label-reg-email">Email / Citizen ID</label>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        <input type="email" id="reg-email" name="email" placeholder="Citizen Email Address" required autocomplete="email">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="reg-phone" class="sr-only" id="label-reg-phone">Emergency Phone Number</label>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                        </svg>
+                        <input type="tel" id="reg-phone" name="phone" placeholder="Emergency Contact Phone" required autocomplete="tel">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="reg-password" class="sr-only" id="label-reg-password">Create Password</label>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <input type="password" id="reg-password" name="password" placeholder="Create Password (min. 6 chars)" minlength="6" required autocomplete="new-password">
+                        <button type="button" class="icon-toggle-pwd" id="btn-toggle-reg-pwd" onclick="togglePassword('reg-password', this)" aria-label="Toggle password visibility">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="reg-confirm-password" class="sr-only" id="label-reg-confirm-pwd">Confirm Password</label>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <input type="password" id="reg-confirm-password" name="confirm_password" placeholder="Confirm Password" minlength="6" required autocomplete="new-password">
+                        <button type="button" class="icon-toggle-pwd" id="btn-toggle-confirm-pwd" onclick="togglePassword('reg-confirm-password', this)" aria-label="Toggle password visibility">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="connect">
+                        <button type="submit" id="btn-reg-submit">Create Citizen Account</button>
+                    </div>
+                </form>
+
+                <div class="login-links">
+                    <div class="tab-switch-helper">
+                        <span id="helper-already-reg">Already registered?</span>
+                        <button type="button" class="text-link-btn" id="btn-go-login" onclick="switchTab('login')">Sign In to account &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- Client-side Interactive Logic & Multilingual System -->
+    <script>
+        // Language dictionaries: English (en), Hindi (hi), Marathi (mr)
+        const TRANSLATIONS = {
+            en: {
+                pageTitle: "Citizen Access & Registration - PulseRoute SOS Portal",
+                backToPortal: "&larr; Back to Portal",
+                adminAccess: "Admin Access",
+                mainHeading: "Citizen Emergency SOS Portal",
+                langLabel: "Language",
+                tabAlreadyRegistered: "Already Registered",
+                tabNotRegistered: "Not Registered Yet",
+                loginTitle: "Secure Portal Access",
+                loginDesc: "Please authenticate to connect with rapid, real-time municipal emergency services. Your secure connection is critical for dispatch telemetry.",
+                citizenIdLabel: "Citizen ID or Email",
+                citizenIdPlaceholder: "Citizen ID or Registered Email",
+                systemPasswordLabel: "System Password",
+                systemPasswordPlaceholder: "System Password",
+                loginSubmit: "Submit / Authenticate",
+                forgotPassword: "Forgot Password?",
+                newNotRegistered: "New or not registered yet?",
+                createAccount: "Create an account &rarr;",
+                regTitle: "Citizen Registration",
+                regDesc: "Register your verified profile with municipal services to enable priority dispatch, real-time medical profile sync, and live responder telemetry.",
+                crisisTitle: "Active Emergency Crisis?",
+                crisisDesc: "No account needed for critical dispatch.",
+                guestSos: "Guest SOS &rarr;",
+                nameLabel: "Full Legal Name",
+                namePlaceholder: "Full Legal Name",
+                emailLabel: "Email / Citizen ID",
+                emailPlaceholder: "Citizen Email Address",
+                phoneLabel: "Emergency Phone Number",
+                phonePlaceholder: "Emergency Contact Phone",
+                pwdLabel: "Create Password",
+                pwdPlaceholder: "Create Password (min. 6 chars)",
+                confirmPwdLabel: "Confirm Password",
+                confirmPwdPlaceholder: "Confirm Password",
+                regSubmit: "Create Citizen Account",
+                alreadyRegistered: "Already registered?",
+                signInAccount: "Sign In to account &rarr;",
+                pwdMismatch: "Passwords do not match. Please verify and try again.",
+                pwdMinLength: "Password must be at least 6 characters.",
+                regSuccess: "Citizen profile registered successfully! Redirecting to login...",
+                postRegMsg: "Registration successful! Please authenticate to complete your session.",
+                forgotPwdPrompt: "Enter your registered Citizen ID or Email to receive a security reset link:",
+                forgotPwdSent: (email) => `A secure reset link has been dispatched to ${email}.`,
+                showPassword: "Show password",
+                hidePassword: "Hide password"
+            },
+            hi: {
+                pageTitle: "नागरिक प्रवेश एवं पंजीकरण - पल्सरोड एसओएस पोर्टल",
+                backToPortal: "&larr; मुख्य पोर्टल पर वापस",
+                adminAccess: "प्रशासक प्रवेश",
+                mainHeading: "नागरिक आपातकालीन एसओएस पोर्टल",
+                langLabel: "भाषा",
+                tabAlreadyRegistered: "पहले से पंजीकृत",
+                tabNotRegistered: "अभी तक पंजीकृत नहीं",
+                loginTitle: "सुरक्षित पोर्टल एक्सेस",
+                loginDesc: "त्वरित, वास्तविक समय नगर निगम आपातकालीन सेवाओं से जुड़ने के लिए कृपया प्रमाणित करें। प्रेषण टेलीमेट्री के लिए आपका सुरक्षित कनेक्शन महत्वपूर्ण है।",
+                citizenIdLabel: "नागरिक आईडी या ईमेल",
+                citizenIdPlaceholder: "नागरिक आईडी या पंजीकृत ईमेल",
+                systemPasswordLabel: "सिस्टम पासवर्ड",
+                systemPasswordPlaceholder: "सिस्टम पासवर्ड",
+                loginSubmit: "सबमिट / प्रमाणित करें",
+                forgotPassword: "पासवर्ड भूल गए?",
+                newNotRegistered: "नए हैं या अभी तक पंजीकृत नहीं?",
+                createAccount: "नया खाता बनाएं &rarr;",
+                regTitle: "नागरिक पंजीकरण",
+                regDesc: "प्राथमिकता प्रेषण, वास्तविक समय चिकित्सा प्रोफाइल सिंक और लाइव रिस्पॉन्डर टेलीमेट्री सक्षम करने के लिए नगर निगम सेवाओं में अपनी सत्यापित प्रोफ़ाइल पंजीकृत करें।",
+                crisisTitle: "सक्रिय आपातकालीन संकट?",
+                crisisDesc: "गंभीर प्रेषण के लिए खाते की आवश्यकता नहीं है।",
+                guestSos: "अतिथि एसओएस &rarr;",
+                nameLabel: "पूरा कानूनी नाम",
+                namePlaceholder: "पूरा कानूनी नाम",
+                emailLabel: "ईमेल / नागरिक आईडी",
+                emailPlaceholder: "नागरिक ईमेल पता",
+                phoneLabel: "आपातकालीन फोन नंबर",
+                phonePlaceholder: "आपातकालीन संपर्क फोन",
+                pwdLabel: "पासवर्ड बनाएं",
+                pwdPlaceholder: "पासवर्ड बनाएं (न्यूनतम 6 अक्षर)",
+                confirmPwdLabel: "पासवर्ड की पुष्टि करें",
+                confirmPwdPlaceholder: "पासवर्ड की पुष्टि करें",
+                regSubmit: "नागरिक खाता बनाएं",
+                alreadyRegistered: "पहले से पंजीकृत हैं?",
+                signInAccount: "खाते में साइन इन करें &rarr;",
+                pwdMismatch: "पासवर्ड मेल नहीं खाते। कृपया पुष्टि करें और पुनः प्रयास करें।",
+                pwdMinLength: "पासवर्ड कम से कम 6 अक्षरों का होना चाहिए।",
+                regSuccess: "नागरिक प्रोफ़ाइल सफलतापूर्वक पंजीकृत! लॉगिन पर ले जाया जा रहा है...",
+                postRegMsg: "पंजीकरण सफल! अपना सत्र पूरा करने के लिए कृपया प्रमाणित करें।",
+                forgotPwdPrompt: "सुरक्षा रीसेट लिंक प्राप्त करने के लिए अपनी पंजीकृत नागरिक आईडी या ईमेल दर्ज करें:",
+                forgotPwdSent: (email) => `${email} पर एक सुरक्षित रीसेट लिंक भेज दिया गया है।`,
+                showPassword: "पासवर्ड दिखाएं",
+                hidePassword: "पासवर्ड छिपाएं"
+            },
+            mr: {
+                pageTitle: "नागरिक प्रवेश आणि नोंदणी - पल्सरोड एसओएस पोर्टल",
+                backToPortal: "&larr; मुख्य पोर्टलवर परत",
+                adminAccess: "प्रशासक प्रवेश",
+                mainHeading: "नागरिक आणीबाणी एसओएस पोर्टल",
+                langLabel: "भाषा",
+                tabAlreadyRegistered: "आधीच नोंदणीकृत",
+                tabNotRegistered: "अजून नोंदणी केली नाही",
+                loginTitle: "सुरक्षित पोर्टल प्रवेश",
+                loginDesc: "जलद, रीअल-टाइम महानगरपालिका आणीबाणी सेवांशी जोडण्यासाठी कृपया प्रमाणीकरण करा. डिस्पॅच टेलिमेट्रीसाठी आपले सुरक्षित कनेक्शन आवश्यक आहे.",
+                citizenIdLabel: "नागरिक आयडी किंवा ईमेल",
+                citizenIdPlaceholder: "नागरिक आयडी किंवा नोंदणीकृत ईमेल",
+                systemPasswordLabel: "सिस्टम पासवर्ड",
+                systemPasswordPlaceholder: "सिस्टम पासवर्ड",
+                loginSubmit: "सबमिट / प्रमाणीकरण करा",
+                forgotPassword: "पासवर्ड विसरलात?",
+                newNotRegistered: "नवीन आहात किंवा अजून नोंदणी केलेली नाही?",
+                createAccount: "नवीन खाते तयार करा &rarr;",
+                regTitle: "नागरिक नोंदणी",
+                regDesc: "प्राधान्य डिस्पॅच, रीअल-टाइम वैद्यकीय प्रोफाइल सिंक आणि थेट प्रतिसादक टेलिमेट्री सक्षम करण्यासाठी आपले सत्यापित प्रोफाइल नोंदणीकृत करा.",
+                crisisTitle: "सक्रिय आणीबाणी संकट?",
+                crisisDesc: "महत्त्वाच्या मदतीसाठी खात्याची आवश्यकता नाही.",
+                guestSos: "अतिथी एसओएस &rarr;",
+                nameLabel: "पूर्ण कायदेशीर नाव",
+                namePlaceholder: "पूर्ण कायदेशीर नाव",
+                emailLabel: "ईमेल / नागरिक आयडी",
+                emailPlaceholder: "नागरिक ईमेल पत्ता",
+                phoneLabel: "आणीबाणी फोन नंबर",
+                phonePlaceholder: "आणीबाणी संपर्क फोन",
+                pwdLabel: "पासवर्ड तयार करा",
+                pwdPlaceholder: "पासवर्ड तयार करा (किमान ६ अक्षरे)",
+                confirmPwdLabel: "पासवर्डची पुष्टी करा",
+                confirmPwdPlaceholder: "पासवर्डची पुष्टी करा",
+                regSubmit: "नागरिक खाते तयार करा",
+                alreadyRegistered: "आधीच नोंदणी केली आहे?",
+                signInAccount: "खात्यात साइन इन करा &rarr;",
+                pwdMismatch: "पासवर्ड जुळत नाहीत. कृपया तपासा आणि पुन्हा प्रयत्न करा.",
+                pwdMinLength: "पासवर्ड किमान ६ अक्षरांचा असावा.",
+                regSuccess: "नागरिक प्रोफाइल यशस्वीरित्या नोंदणीकृत! लॉगिनकडे वळवत आहे...",
+                postRegMsg: "नोंदणी यशस्वी! आपले सत्र पूर्ण करण्यासाठी कृपया प्रमाणीकरण करा.",
+                forgotPwdPrompt: "सुरक्षा रीसेट लिंक मिळवण्यासाठी आपला नोंदणीकृत नागरिक आयडी किंवा ईमेल प्रविष्ट करा:",
+                forgotPwdSent: (email) => `${email} वर सुरक्षित रीसेट लिंक पाठवण्यात आली आहे.`,
+                showPassword: "पासवर्ड दाखवा",
+                hidePassword: "पासवर्ड लपवा"
+            }
+        };
+
+        // Resolve language: reads URL param '?lang=...', then localStorage 'pulseroute_lang' set by home page translator, defaults to 'en'
+        function resolveLanguage() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const paramLang = params.get('lang');
+                if (paramLang && TRANSLATIONS[paramLang]) {
+                    localStorage.setItem('pulseroute_lang', paramLang);
+                    return paramLang;
+                }
+            } catch (e) {}
+
+            try {
+                const storedLang = localStorage.getItem('pulseroute_lang');
+                if (storedLang && TRANSLATIONS[storedLang]) {
+                    return storedLang;
+                }
+            } catch (e) {}
+
+            return 'en';
+        }
+
+        let currentLanguage = resolveLanguage();
+
+        // Translation lookup helper
+        function t(key) {
+            return TRANSLATIONS[currentLanguage]?.[key] || TRANSLATIONS['en']?.[key] || key;
+        }
+
+        // Apply selected language across all UI elements
+        function setLanguage(lang) {
+            if (!TRANSLATIONS[lang]) lang = 'en';
+            currentLanguage = lang;
+            try {
+                localStorage.setItem('pulseroute_lang', lang);
+            } catch (e) {}
+            document.documentElement.lang = lang;
+
+            // Update Document Title
+            document.title = t('pageTitle');
+
+            // Text/HTML helper updates
+            const setTxt = (id, key) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = t(key);
+            };
+
+            const setHtml = (id, key) => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = t(key);
+            };
+
+            const setPlc = (id, key) => {
+                const el = document.getElementById(id);
+                if (el) el.placeholder = t(key);
+            };
+
+            // Top Header
+            setHtml('btn-back-portal', 'backToPortal');
+            setTxt('btn-admin-access', 'adminAccess');
+            setTxt('main-heading', 'mainHeading');
+
+            const adminBtn = document.getElementById('btn-admin-access');
+            if (adminBtn) adminBtn.href = `admin-login.html?lang=${lang}`;
+
+            // Tabs
+            setTxt('tab-login-text', 'tabAlreadyRegistered');
+            setTxt('tab-register-text', 'tabNotRegistered');
+
+            // Tab 1: Login
+            setTxt('login-title', 'loginTitle');
+            setTxt('login-desc', 'loginDesc');
+            setTxt('label-citizen-id', 'citizenIdLabel');
+            setPlc('citizen-id', 'citizenIdPlaceholder');
+            setTxt('label-system-password', 'systemPasswordLabel');
+            setPlc('system-password', 'systemPasswordPlaceholder');
+            setTxt('btn-login-submit', 'loginSubmit');
+            setTxt('link-forgot-pwd', 'forgotPassword');
+            setTxt('helper-new-user', 'newNotRegistered');
+            setHtml('btn-go-register', 'createAccount');
+
+            // Tab 2: Register
+            setTxt('reg-title', 'regTitle');
+            setTxt('reg-desc', 'regDesc');
+            setTxt('banner-emergency-title', 'crisisTitle');
+            setTxt('banner-emergency-desc', 'crisisDesc');
+            setHtml('banner-emergency-link', 'guestSos');
+
+            setTxt('label-reg-name', 'nameLabel');
+            setPlc('reg-name', 'namePlaceholder');
+            setTxt('label-reg-email', 'emailLabel');
+            setPlc('reg-email', 'emailPlaceholder');
+            setTxt('label-reg-phone', 'phoneLabel');
+            setPlc('reg-phone', 'phonePlaceholder');
+            setTxt('label-reg-password', 'pwdLabel');
+            setPlc('reg-password', 'pwdPlaceholder');
+            setTxt('label-reg-confirm-pwd', 'confirmPwdLabel');
+            setPlc('reg-confirm-password', 'confirmPwdPlaceholder');
+            setTxt('btn-reg-submit', 'regSubmit');
+            setTxt('helper-already-reg', 'alreadyRegistered');
+            setHtml('btn-go-login', 'signInAccount');
+
+            // Update password toggle aria-labels
+            updatePasswordToggleLabel('system-password', 'btn-toggle-login-pwd');
+            updatePasswordToggleLabel('reg-password', 'btn-toggle-reg-pwd');
+            updatePasswordToggleLabel('reg-confirm-password', 'btn-toggle-confirm-pwd');
+        }
+
+        // Helper to keep password toggle accessible in the current language
+        function updatePasswordToggleLabel(inputId, btnId) {
+            const input = document.getElementById(inputId);
+            const btn = document.getElementById(btnId);
+            if (!input || !btn) return;
+            const isPassword = input.type === 'password';
+            btn.setAttribute('aria-label', isPassword ? t('showPassword') : t('hidePassword'));
+        }
+
+        // Switch between "Already Registered" (Login) and "Not Registered Yet" (Register) tabs
+        function switchTab(tab) {
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+            const panelLogin = document.getElementById('panel-login');
+            const panelRegister = document.getElementById('panel-register');
+
+            // Clear temporary messages
+            hideMessage('login-msg');
+            hideMessage('register-msg');
+
+            if (tab === 'register') {
+                tabLogin.classList.remove('active');
+                tabLogin.setAttribute('aria-selected', 'false');
+                tabRegister.classList.add('active');
+                tabRegister.setAttribute('aria-selected', 'true');
+
+                panelLogin.classList.remove('active');
+                panelRegister.classList.add('active');
+
+                // Update URL hash without scrolling
+                if (history.replaceState) {
+                    history.replaceState(null, null, '#register');
+                } else {
+                    location.hash = '#register';
+                }
+
+                // Focus first input field
+                const firstInput = document.getElementById('reg-name');
+                if (firstInput) firstInput.focus();
+            } else {
+                tabRegister.classList.remove('active');
+                tabRegister.setAttribute('aria-selected', 'false');
+                tabLogin.classList.add('active');
+                tabLogin.setAttribute('aria-selected', 'true');
+
+                panelRegister.classList.remove('active');
+                panelLogin.classList.add('active');
+
+                if (history.replaceState) {
+                    history.replaceState(null, null, '#login');
+                } else {
+                    location.hash = '#login';
+                }
+
+                const firstInput = document.getElementById('citizen-id');
+                if (firstInput) firstInput.focus();
+            }
+        }
+
+        // Toggle password visibility (Show / Hide)
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+
+            const eyeIconSvg = isPassword 
+                ? `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`
+                : `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+
+            btn.innerHTML = eyeIconSvg;
+            btn.setAttribute('aria-label', isPassword ? t('hidePassword') : t('showPassword'));
+        }
+
+        // Show friendly alert message
+        function showMessage(elementId, text, type) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            el.className = 'form-msg ' + (type === 'success' ? 'success' : 'error');
+            el.textContent = text;
+            el.style.display = 'block';
+        }
+
+        function hideMessage(elementId) {
+            const el = document.getElementById(elementId);
+            if (el) {
+                el.style.display = 'none';
+                el.textContent = '';
+            }
+        }
+
+        // Handle client-side registration verification
+        function handleRegister(event) {
+            event.preventDefault();
+            hideMessage('register-msg');
+
+            const pwd = document.getElementById('reg-password').value;
+            const confirmPwd = document.getElementById('reg-confirm-password').value;
+            const email = document.getElementById('reg-email').value;
+
+            if (pwd !== confirmPwd) {
+                showMessage('register-msg', t('pwdMismatch'), 'error');
+                document.getElementById('reg-confirm-password').focus();
+                return false;
+            }
+
+            if (pwd.length < 6) {
+                showMessage('register-msg', t('pwdMinLength'), 'error');
+                document.getElementById('reg-password').focus();
+                return false;
+            }
+
+            // Success feedback
+            showMessage('register-msg', t('regSuccess'), 'success');
+
+            // Populate login field with registered email and switch to login tab after brief pause
+            setTimeout(() => {
+                document.getElementById('citizen-id').value = email;
+                switchTab('login');
+                showMessage('login-msg', t('postRegMsg'), 'success');
+                document.getElementById('system-password').focus();
+            }, 1200);
+
+            return false;
+        }
+
+        // Prompt for forgot password with translated feedback
+        function handleForgotPassword() {
+            const email = prompt(t('forgotPwdPrompt'));
+            if (email && email.trim()) {
+                const formattedMsg = typeof TRANSLATIONS[currentLanguage]?.forgotPwdSent === 'function'
+                    ? TRANSLATIONS[currentLanguage].forgotPwdSent(email.trim())
+                    : TRANSLATIONS['en'].forgotPwdSent(email.trim());
+                showMessage('login-msg', formattedMsg, 'success');
+            }
+        }
+
+        // Initialize language and URL hash on load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Apply saved or default language
+            setLanguage(currentLanguage);
+
+            // Respect incoming direct URL hash
+            if (window.location.hash === '#register') {
+                switchTab('register');
+            }
+        });
+
+        // Real-time synchronization when language is changed on the home page
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'pulseroute_lang' && e.newValue && TRANSLATIONS[e.newValue]) {
+                setLanguage(e.newValue);
+            }
+        });
+    </script>
+</body>
+</html>

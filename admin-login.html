@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Admin Login - Citizen Emergency SOS</title>
+    <!-- Link the same CSS file for a consistent design -->
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <a href="login.html" class="admin-top-btn" id="btn-back-citizen">Back to Citizen Portal</a>
+
+    <div class="container">
+        <h1 id="admin-heading">Emergency Dispatch Admin</h1>
+        <div class="login-box">
+            <div class="wrapper">
+                <h2 id="admin-auth-title">Admin Authentication</h2>
+                <h5 id="admin-auth-desc">Authorized municipal personnel only</h5>
+            </div>
+            
+            <form action="/admin-auth" method="POST">
+                <div class="input-group">
+                    <label for="citizen-id" class="sr-only" id="label-admin-id">Admin ID / Registered Email</label>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg> 
+                    <input type="text" id="citizen-id" name="citizen_id" placeholder="Admin ID / Registered Email" required autocomplete="username">
+                </div>
+
+                <div class="input-group">
+                    <label for="system-password" class="sr-only" id="label-admin-password">System Password</label>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    <input type="password" id="system-password" name="system_password" placeholder="System Password" required autocomplete="current-password">
+                    <button type="button" class="icon-toggle-pwd" id="btn-toggle-admin-pwd" onclick="togglePassword('system-password', this)" aria-label="Toggle password visibility">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="connect">
+                    <button type="submit" id="btn-admin-submit">Submit / Authenticate</button>
+                </div>
+
+                <div class="login-links">
+                    <a href="javascript:void(0)" onclick="handleAdminForgotPassword()" id="link-admin-forgot">Forgot Password?</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const TRANSLATIONS = {
+            en: {
+                pageTitle: "Admin Login - Citizen Emergency SOS",
+                backCitizen: "Back to Citizen Portal",
+                adminHeading: "Emergency Dispatch Admin",
+                langLabel: "Language",
+                adminAuthTitle: "Admin Authentication",
+                adminAuthDesc: "Authorized municipal personnel only",
+                adminIdLabel: "Admin ID / Registered Email",
+                adminIdPlaceholder: "Admin ID / Registered Email",
+                passwordLabel: "System Password",
+                passwordPlaceholder: "System Password",
+                submitBtn: "Submit / Authenticate",
+                forgotPwd: "Forgot Password?",
+                forgotAlert: "Admin security reset request initiated. Please contact your municipal IT dispatch administrator.",
+                showPassword: "Show password",
+                hidePassword: "Hide password"
+            },
+            hi: {
+                pageTitle: "व्यवस्थापक लॉगिन - नागरिक आपातकालीन एसओएस",
+                backCitizen: "नागरिक पोर्टल पर वापस",
+                adminHeading: "आपातकालीन प्रेषण व्यवस्थापक",
+                langLabel: "भाषा",
+                adminAuthTitle: "व्यवस्थापक प्रमाणीकरण",
+                adminAuthDesc: "केवल अधिकृत नगर निगम कर्मी",
+                adminIdLabel: "व्यवस्थापक आईडी / पंजीकृत ईमेल",
+                adminIdPlaceholder: "व्यवस्थापक आईडी / पंजीकृत ईमेल",
+                passwordLabel: "सिस्टम पासवर्ड",
+                passwordPlaceholder: "सिस्टम पासवर्ड",
+                submitBtn: "सबमिट / प्रमाणित करें",
+                forgotPwd: "पासवर्ड भूल गए?",
+                forgotAlert: "व्यवस्थापक सुरक्षा रीसेट अनुरोध शुरू किया गया। कृपया अपने नगर निगम आईटी प्रेषण व्यवस्थापक से संपर्क करें।",
+                showPassword: "पासवर्ड दिखाएं",
+                hidePassword: "पासवर्ड छिपाएं"
+            },
+            mr: {
+                pageTitle: "प्रशासक लॉगिन - नागरिक आणीबाणी एसओएस",
+                backCitizen: "नागरिक पोर्टलवर परत",
+                adminHeading: "आणीबाणी प्रेषण प्रशासक",
+                langLabel: "भाषा",
+                adminAuthTitle: "प्रशासक प्रमाणीकरण",
+                adminAuthDesc: "केवळ अधिकृत महानगरपालिका कर्मचारी",
+                adminIdLabel: "प्रशासक आयडी / नोंदणीकृत ईमेल",
+                adminIdPlaceholder: "प्रशासक आयडी / नोंदणीकृत ईमेल",
+                passwordLabel: "सिस्टम पासवर्ड",
+                passwordPlaceholder: "सिस्टम पासवर्ड",
+                submitBtn: "सबमिट / प्रमाणीकरण करा",
+                forgotPwd: "पासवर्ड विसरलात?",
+                forgotAlert: "प्रशासक सुरक्षा रीसेट विनंती सुरू केली. कृपया आपल्या महानगरपालिका आयटी प्रेषण प्रशासकाशी संपर्क साधा.",
+                showPassword: "पासवर्ड दाखवा",
+                hidePassword: "पासवर्ड लपवा"
+            }
+        };
+
+        // Resolve language: reads URL param '?lang=...', then localStorage 'pulseroute_lang' set by home page translator, defaults to 'en'
+        function resolveLanguage() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const paramLang = params.get('lang');
+                if (paramLang && TRANSLATIONS[paramLang]) {
+                    localStorage.setItem('pulseroute_lang', paramLang);
+                    return paramLang;
+                }
+            } catch (e) {}
+
+            try {
+                const storedLang = localStorage.getItem('pulseroute_lang');
+                if (storedLang && TRANSLATIONS[storedLang]) {
+                    return storedLang;
+                }
+            } catch (e) {}
+
+            return 'en';
+        }
+
+        let currentLanguage = resolveLanguage();
+
+        function t(key) {
+            return TRANSLATIONS[currentLanguage]?.[key] || TRANSLATIONS['en']?.[key] || key;
+        }
+
+        function setLanguage(lang) {
+            if (!TRANSLATIONS[lang]) lang = 'en';
+            currentLanguage = lang;
+            try {
+                localStorage.setItem('pulseroute_lang', lang);
+            } catch (e) {}
+            document.documentElement.lang = lang;
+
+            document.title = t('pageTitle');
+
+            const setTxt = (id, key) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = t(key);
+            };
+
+            const setPlc = (id, key) => {
+                const el = document.getElementById(id);
+                if (el) el.placeholder = t(key);
+            };
+
+            setTxt('btn-back-citizen', 'backCitizen');
+            const backBtn = document.getElementById('btn-back-citizen');
+            if (backBtn) backBtn.href = `login.html?lang=${lang}`;
+
+            setTxt('admin-heading', 'adminHeading');
+            setTxt('admin-auth-title', 'adminAuthTitle');
+            setTxt('admin-auth-desc', 'adminAuthDesc');
+            setTxt('label-admin-id', 'adminIdLabel');
+            setPlc('citizen-id', 'adminIdPlaceholder');
+            setTxt('label-admin-password', 'passwordLabel');
+            setPlc('system-password', 'passwordPlaceholder');
+            setTxt('btn-admin-submit', 'submitBtn');
+            setTxt('link-admin-forgot', 'forgotPwd');
+
+            const toggleBtn = document.getElementById('btn-toggle-admin-pwd');
+            const pwdInput = document.getElementById('system-password');
+            if (toggleBtn && pwdInput) {
+                toggleBtn.setAttribute('aria-label', pwdInput.type === 'password' ? t('showPassword') : t('hidePassword'));
+            }
+        }
+
+        function handleAdminForgotPassword() {
+            alert(t('forgotAlert'));
+        }
+
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            btn.innerHTML = isPassword 
+                ? `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`
+                : `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+            btn.setAttribute('aria-label', isPassword ? t('hidePassword') : t('showPassword'));
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setLanguage(currentLanguage);
+        });
+
+        // Real-time synchronization when language is changed on the home page
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'pulseroute_lang' && e.newValue && TRANSLATIONS[e.newValue]) {
+                setLanguage(e.newValue);
+            }
+        });
+    </script>
+</body>
+</html>
